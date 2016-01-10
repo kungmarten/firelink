@@ -109,14 +109,37 @@ namespace Firelink
         {
             var transpose = MatrixCreate(Columns, Rows);
             Parallel.For(0, Rows, i =>
-            { 
-                for (int j = 0; j < Columns; j++)
+            {
+                Parallel.For(0, Columns, j =>
                 {
                     transpose[j][i] = matrix[i][j];
-                }
+                });
             });
             Matrix result = new Matrix(transpose);
             return result;
+        }
+
+        // The identiy of the matrix.
+        public Matrix Identity()
+        {
+            if (Columns != Rows)
+                throw new Exception("Invalid size of matrix.");
+            else
+            {
+                var identity = MatrixCreate(Columns, Rows);
+                Parallel.For(0, Rows, i =>
+                {
+                    Parallel.For(0, Columns, j =>
+                    {
+                        if (i == j)
+                            identity[j][i] = 1;
+                        else
+                            identity[j][i] = 0;
+                    });
+                });
+                Matrix result = new Matrix(identity);
+                return result;
+            }
         }
 
         // Overload the multiplication for matrices.
@@ -126,7 +149,7 @@ namespace Firelink
             int aRows = matrixA.Rows; int aCols = matrixA.Columns;
             int bRows = matrixB.Rows; int bCols = matrixB.Columns;
             if (aCols != bRows)
-                throw new Exception("xxxx");
+                throw new Exception("Columns of matrix A does not match rows of matrix B.");
 
             double[][] product = MatrixCreate(aRows, bCols);
 
