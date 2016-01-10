@@ -34,19 +34,6 @@ namespace Firelink
 
         public Matrix(double[][] matrix)
         {
-            int rowColFactor = flatmap.Length % columns;
-            try
-            {
-                if (rowColFactor != 0)
-                {
-                    throw new Exception();
-                }
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("The length of the array ({0}) is not a factor of {1}.", flatmap.Length, columns);
-            }
-
             this.matrix = matrix;
             columns = matrix[0].Length;
             rows = matrix.Length;
