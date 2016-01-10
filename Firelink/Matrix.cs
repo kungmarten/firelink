@@ -74,11 +74,6 @@ namespace Firelink
             return result;
         }
 
-        /*public double[] FlatMap
-        {
-            get { return flatmap; }
-        }*/
-
         public int Columns
         {
             get { return columns; }
@@ -109,7 +104,7 @@ namespace Firelink
             }
         }
 
-        public static double[][] MatrixProduct(Matrix matrixA,
+        public static Matrix operator *(Matrix matrixA,
                                     Matrix matrixB)
         {
             int aRows = matrixA.Rows; int aCols = matrixA.Columns;
@@ -117,15 +112,17 @@ namespace Firelink
             if (aCols != bRows)
                 throw new Exception("xxxx");
 
-            double[][] result = MatrixCreate(aRows, bCols);
+            double[][] product = MatrixCreate(aRows, bCols);
 
             Parallel.For(0, aRows, i =>
             {
                 for (int j = 0; j < bCols; ++j) // each col of B
                     for (int k = 0; k < aCols; ++k) // could use k < bRows
-                        result[i][j] += matrixA.AsMatrix[i][k] * matrixB.AsMatrix[k][j];
+                        product[i][j] += matrixA.AsMatrix[i][k] * matrixB.AsMatrix[k][j];
             }
             );
+
+            Matrix result = new Matrix(product);
 
             return result;
         }

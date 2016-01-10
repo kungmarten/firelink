@@ -16,6 +16,8 @@ namespace Firelink
 
             myMatrix.ShowMatrix();
             mySecondMatrix.ShowMatrix();
+            var prodMatrix = myMatrix * mySecondMatrix;
+            prodMatrix.ShowMatrix();
             Console.ReadKey();
         }
     }
