@@ -104,6 +104,22 @@ namespace Firelink
             }
         }
 
+        // Matrix transpose.
+        public Matrix Transpose()
+        {
+            var transpose = MatrixCreate(Columns, Rows);
+            Parallel.For(0, Rows, i =>
+            { 
+                for (int j = 0; j < Columns; j++)
+                {
+                    transpose[j][i] = matrix[i][j];
+                }
+            });
+            Matrix result = new Matrix(transpose);
+            return result;
+        }
+
+        // Overload the multiplication for matrices.
         public static Matrix operator *(Matrix matrixA,
                                     Matrix matrixB)
         {
