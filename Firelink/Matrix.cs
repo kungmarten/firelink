@@ -165,5 +165,55 @@ namespace Firelink
 
             return result;
         }
+
+        // Overload the addition for matrices.
+        public static Matrix operator +(Matrix matrixA,
+                                    Matrix matrixB)
+        {
+            if (matrixA.Columns != matrixB.Columns || matrixA.Rows != matrixB.Rows)
+                throw new Exception("Matrices must be of equal dimensions to add.");
+            else
+            {
+                var cols = matrixA.Columns;
+                var rows = matrixA.Columns;
+                double[][] addition = MatrixCreate(rows, cols);
+
+                Parallel.For(0, rows, i =>
+                {
+                    Parallel.For(0, rows, j => // each col of B
+                    {
+                        addition[i][j] = matrixA.AsMatrix[i][j] + matrixB.AsMatrix[i][j]
+                    });
+                });
+
+                Matrix result = new Matrix(addition);
+                return result;
+            }
+        }
+
+        // Overload the subtraction for matrices.
+        public static Matrix operator -(Matrix matrixA,
+                                    Matrix matrixB)
+        {
+            if (matrixA.Columns != matrixB.Columns || matrixA.Rows != matrixB.Rows)
+                throw new Exception("Matrices must be of equal dimensions to subtract.");
+            else
+            {
+                var cols = matrixA.Columns;
+                var rows = matrixA.Columns;
+                double[][] addition = MatrixCreate(rows, cols);
+
+                Parallel.For(0, rows, i =>
+                {
+                    Parallel.For(0, rows, j => // each col of B
+                    {
+                        addition[i][j] = matrixA.AsMatrix[i][j] - matrixB.AsMatrix[i][j]
+                    });
+                });
+
+                Matrix result = new Matrix(addition);
+                return result;
+            }
+        }
     }
 }
