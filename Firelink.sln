@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Firelink", "Firelink\Fireli
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F7E48973-D36C-417E-9266-79B113D340D5}"
 	ProjectSection(SolutionItems) = preProject
-		Class1.cs = Class1.cs
+		Matrix.cs = Matrix.cs
 	EndProjectSection
 EndProject
 Global
