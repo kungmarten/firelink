@@ -57,6 +57,20 @@ namespace Firelink
             return result;
         }
 
+        private static double[][] Zeroes(int rows, int columns)
+        {
+            double[][] result = MatrixCreate(rows, columns);
+            Parallel.For(0, rows, i =>
+            { 
+                for (int j = 0; j < columns; j++)
+                {
+                    result[i][j] = 0.0;
+                }
+            });
+
+            return result;
+        }
+
         private double[][] PopulateMatrix(double[] flatmap)
         {
             double[][] result = MatrixCreate();
@@ -110,10 +124,10 @@ namespace Firelink
             var transpose = MatrixCreate(Columns, Rows);
             Parallel.For(0, Rows, i =>
             {
-                Parallel.For(0, Columns, j =>
+                for (int j = 0; j < Columns; j++)
                 {
                     transpose[j][i] = matrix[i][j];
-                });
+                }
             });
             Matrix result = new Matrix(transpose);
             return result;
@@ -129,13 +143,13 @@ namespace Firelink
                 var identity = MatrixCreate(Columns, Rows);
                 Parallel.For(0, Rows, i =>
                 {
-                    Parallel.For(0, Columns, j =>
+                    for (int j = 0; j < Columns; j++)
                     {
-                        if (i == j)
-                            identity[j][i] = 1;
-                        else
-                            identity[j][i] = 0;
-                    });
+                            if (i == j)
+                                identity[j][i] = 1;
+                            else
+                                identity[j][i] = 0;
+                    } 
                 });
                 Matrix result = new Matrix(identity);
                 return result;
@@ -180,10 +194,10 @@ namespace Firelink
 
                 Parallel.For(0, rows, i =>
                 {
-                    Parallel.For(0, rows, j => // each col of B
+                    for (int j = 0; j < cols; j++) // each col of B
                     {
-                        addition[i][j] = matrixA.AsMatrix[i][j] + matrixB.AsMatrix[i][j]
-                    });
+                        addition[i][j] = matrixA.AsMatrix[i][j] + matrixB.AsMatrix[i][j];
+                    } 
                 });
 
                 Matrix result = new Matrix(addition);
@@ -205,15 +219,59 @@ namespace Firelink
 
                 Parallel.For(0, rows, i =>
                 {
-                    Parallel.For(0, rows, j => // each col of B
+                    for (int j = 0; j < cols; j++) // each col of B
                     {
-                        addition[i][j] = matrixA.AsMatrix[i][j] - matrixB.AsMatrix[i][j]
-                    });
+                        addition[i][j] = matrixA.AsMatrix[i][j] - matrixB.AsMatrix[i][j];
+                    } 
                 });
 
                 Matrix result = new Matrix(addition);
                 return result;
             }
+        }
+
+        //Computes the upper triangular Cholesky factorization of a positive definite matrix.
+        public Matrix Cholesky(double zTol = 1.0e-5)
+        {
+            var cholesky = Zeroes(Rows, Columns);
+            for (int i = 0; i < Rows; i++)
+            {
+                double S = 0.0;
+                for (int k = 0; k < i; k++)
+                {
+                    S = S + Math.Pow(cholesky[k][i], 2.0);
+                }
+                double d = AsMatrix[i][i] - S;
+                if (Math.Abs(d) < zTol)
+                {
+                    cholesky[i][i] = 0.0;
+
+                }
+                else if (d < 0.0)
+                {
+                    throw new Exception("Matrix not positive-definite.");
+                }
+                else
+                {
+                    cholesky[i][i] = Math.Sqrt(d);
+                }
+                for (int j = i; j < Rows; j++)
+                {
+                    S = 0.0;
+                    for (int k = 0; k < Rows; k++)
+                    {
+                        S = S + cholesky[k][i] * cholesky[k][j];
+                    }
+                    if (Math.Abs(S) < zTol)
+                    {
+                        S = 0.0;
+                    }
+                    cholesky[i][j] = (AsMatrix[i][i] - S) / cholesky[i][i];
+                }
+            }
+
+            Matrix result = new Matrix(cholesky);
+            return result;
         }
     }
 }
